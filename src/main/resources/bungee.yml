@@ -1,0 +1,5 @@
+name: CrossLink
+main: com.keuin.crosslink.BungeeMain
+version: 1.0-SNAPSHOT
+author: Keuin
+description: Link your grouped servers with external world.

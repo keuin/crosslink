@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group 'com.keuin'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        name 'velocity'
+        url 'https://repo.velocitypowered.com/snapshots/'
+    }
+    maven {
+        name 'bungeecord-repo'
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
+dependencies {
+    // JUnit
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    // Velocity
+    implementation 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
+    annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
+    // BungeeCord
+    implementation 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
+}
+
+test {
+    useJUnitPlatform()
+}
