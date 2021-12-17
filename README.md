@@ -1,0 +1,1 @@
+# CrossLink: rule-based intercommunicating framework for BungeeCord and Velocity

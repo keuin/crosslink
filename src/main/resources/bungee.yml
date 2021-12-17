@@ -1,5 +1,5 @@
-name: CrossLink
-main: com.keuin.crosslink.BungeeMain
+name: crosslink
+main: com.keuin.crosslink.plugin.bungee.BungeeMainWrapper
 version: 1.0-SNAPSHOT
 author: Keuin
 description: Link your grouped servers with external world.

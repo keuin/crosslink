@@ -1,4 +1,6 @@
 plugins {
+    id "com.peterabeles.gversion" version "1.10"
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
     id 'java'
 }
 
@@ -9,7 +11,7 @@ repositories {
     mavenCentral()
     maven {
         name 'velocity'
-        url 'https://repo.velocitypowered.com/snapshots/'
+        url 'https://repo.velocitypowered.com/snapshots'
     }
     maven {
         name 'bungeecord-repo'
@@ -17,15 +19,67 @@ repositories {
     }
 }
 
+gversion {
+    srcDir       = "src/main/java/"           // path is relative to the sub-project by default
+    // Gradle variables can also be used
+    // E.g. "${project.rootDir}/module/src/main/java"
+    classPackage = "com.keuin.crosslink.util.version"
+    className    = "VersionInfo"              // optional. If not specified GVersion is used
+    dateFormat   = "yyyy-MM-dd'T'HH:mm:ss'Z'" // optional. This is the default
+    timeZone     = "UTC+8"                    // optional. UTC is default
+    debug        = false                      // optional. print out extra debug information
+    language     = "java"                     // optional. Can be Java, Kotlin, YAML, or Properties. Case insensitive.
+    explicitType = false                      // optional. Force types to be explicitly printed
+    indent       = "    "                     // optional. Change how code is indented. 1 tab is default.
+    annotate     = false                      // optional. Java only. Adds @Generated annotation
+}
+
+configurations {
+    provided
+    implementation.extendsFrom provided
+    testImplementation.extendsFrom provided
+    testImplementation.extendsFrom shadow
+    project.compileJava.dependsOn(createVersionFile) // auto generate class VersionInfo when compiling
+}
+
 dependencies {
+    // provided: the host program (BungeeCord or Velocity) have loaded this library, no need to shade
+    // shadow: our custom dependency, should be packed into .jar
+    // TODO: reduce .jar file size
+
+    // IDEA annotations
+    implementation 'org.jetbrains:annotations:22.0.0'
     // JUnit
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     // Velocity
-    implementation 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
-    annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
+    provided 'com.velocitypowered:velocity-api:3.0.0-SNAPSHOT'
+    annotationProcessor 'com.velocitypowered:velocity-api:3.0.0-SNAPSHOT'
     // BungeeCord
-    implementation 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
+    provided 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
+    // https://mvnrepository.com/artifact/net.time4j/time4j-base
+    shadow 'net.time4j:time4j-base:5.8'
+    // https://mvnrepository.com/artifact/com.google.inject/guice
+    shadow 'com.google.inject:guice:5.0.1'
+    // https://mvnrepository.com/artifact/net.kyori/adventure-api
+    shadow 'net.kyori:adventure-api:4.9.3' // bungeecord does not have this, so shadow
+    // https://mvnrepository.com/artifact/net.kyori/adventure-text-serializer-plain
+    shadow 'net.kyori:adventure-text-serializer-plain:4.9.3'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    shadow 'com.fasterxml.jackson.core:jackson-core:2.13.0'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    shadow 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    shadow 'com.google.code.gson:gson:2.8.9'
+    // https://mvnrepository.com/artifact/com.github.pengrad/java-telegram-bot-api
+    shadow 'com.github.pengrad:java-telegram-bot-api:5.5.0'
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+
+    // mitigate log4j security problem
+    exclude 'org/apache/logging/log4j/core/lookup/JndiLookup.class'
 }
 
 test {
