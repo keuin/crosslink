@@ -17,7 +17,9 @@ import java.util.Optional;
 public class RemoteEndpointFactory {
     private static final Logger logger =
             LoggerFactory.getLogger(LoggerNaming.name().of("config").of("remotes").toString());
-    private static final IRemoteEndpointFactory[] factories = new IRemoteEndpointFactory[]{new TelegramEndpointFactory()};
+    private static final IRemoteEndpointFactory[] factories = new IRemoteEndpointFactory[]{
+            new TelegramEndpointFactory(), new PsmbEndpointFactory()
+    };
 
     /**
      * Create an {@link IEndpoint} instance based on given JSON config node.

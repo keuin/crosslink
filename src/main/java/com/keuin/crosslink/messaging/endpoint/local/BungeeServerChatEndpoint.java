@@ -88,6 +88,7 @@ public class BungeeServerChatEndpoint implements IEndpoint {
     }
 
     private void onMessage(@NotNull IMessage message) {
+        // TODO make message routing async, probably utilizing a producer-consumer model
         var rt = router;
         if (rt == null) {
             throw new IllegalStateException("Current endpoint hasn't bound to any router");
