@@ -69,8 +69,6 @@ dependencies {
     shadow 'com.fasterxml.jackson.core:jackson-core:2.13.0'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     shadow 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
-    // https://mvnrepository.com/artifact/com.google.code.gson/gson
-    shadow 'com.google.code.gson:gson:2.8.9'
     // https://mvnrepository.com/artifact/com.github.pengrad/java-telegram-bot-api
     shadow 'com.github.pengrad:java-telegram-bot-api:5.5.0'
     // https://mvnrepository.com/artifact/org.mongodb/bson

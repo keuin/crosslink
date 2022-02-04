@@ -176,6 +176,5 @@ CrossLink 基于许多开源组件，这些开源组件的许可协议和声明�
 - [Guice](https://github.com/google/guice)
 - [adventure](https://github.com/KyoriPowered/adventure)
 - [jackson-core](https://github.com/FasterXML/jackson-core)
-- [gson](https://github.com/google/gson)
 - [java-telegram-bot-api](https://github.com/pengrad/java-telegram-bot-api)
 - [bson](https://mvnrepository.com/artifact/org.mongodb/bson)
