@@ -1,3 +1,11 @@
+# i18n README
+
+| Language             | File                               |
+|----------------------|------------------------------------|
+| English (US)         | [README.md](README.md)             |
+| Chinese (Simplified) | [README_zh_CN.md](README_zh_CN.md) |
+
+
 # CrossLink: 基于规则路由的 BungeeCord/Velocity 消息互联框架
 
 CrossLink 的目的是连接Minecraft群组服务器和即时通讯软件。
