@@ -6,7 +6,7 @@
 | Chinese (Simplified) | [README_zh_CN.md](README_zh_CN.md) |
 
 
-# CrossLink: 基于规则路由的 BungeeCord/Velocity 消息互联框架
+# 1. CrossLink: 基于规则路由的 BungeeCord/Velocity 消息互联框架
 
 CrossLink 的目的是连接Minecraft群组服务器和即时通讯软件。
 
@@ -16,7 +16,7 @@ CrossLink 将每个子服务器的聊天窗口视为独立的端点，将每个�
 这些**基本操作（action）** 组合成为**路由规则（rule）**，有限个路由规则的有序排列形成**路由表**。 CrossLink 按照路由表转发消息，基本操作的组合可实现自由而强大的消息转发，从而 提供高度定制化的
 Minecraft 群组服务器消息互联方案。
 
-# 运行环境
+# 2. 运行环境
 
 - Minecraft 反向代理服务器：
   - BungeeCord （未测试，理论上完全兼容）
@@ -27,14 +27,14 @@ Minecraft 群组服务器消息互联方案。
   - OpenJDK 17 （在 `OpenJDK 64-Bit Server VM (build 17.0.1+12-LTS, mixed mode, sharing)` 版本测试通过）
 
 
-# 配置说明
+# 3. 配置说明
 
 1. 在插件目录 `plugins` 里放置插件 `.jar` 文件。
 2. 在此目录下新建子目录 `crosslink`。
 3. 在子目录 `crosslink` 下新建 `messaging.json` 文本文件和 `api.json` 文本文件。
 4. 按照以下样例编写配置文件。
 
-## `messaging.json` 示例
+## 3.1 `messaging.json` 示例
 
 ```json5
 {
@@ -160,7 +160,7 @@ Minecraft 群组服务器消息互联方案。
 }
 ```
 
-## `api.json` 示例
+## 3.2 `api.json` 示例
 
 ```json5
 {
@@ -173,7 +173,7 @@ Minecraft 群组服务器消息互联方案。
 ```
 
 
-# 开源声明
+# 4. 开源声明
 
 CrossLink 至今的所有版本均在 GPLv3 协议下开源，您可以在 [CrossLink 项目主页](https://github.com/keuin/crosslink) 上找到他的源代码。
 CrossLink 基于许多开源组件，这些开源组件的许可协议和声明可以在他们的项目主页找到：

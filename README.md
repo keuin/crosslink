@@ -6,7 +6,7 @@
 | Chinese (Simplified) | [README_zh_CN.md](README_zh_CN.md) |
 
 
-# CrossLink: rule-based intercommunicating framework for BungeeCord and Velocity
+# 1. CrossLink: rule-based intercommunicating framework for BungeeCord and Velocity
 
 CrossLink aims at bridging Minecraft chats and instant messaging platforms.
 
@@ -23,7 +23,7 @@ the routing table. The combination of **actions** is versatile to help build a h
 message forwarding system among Minecraft grouped servers and instant messaging platforms.
 
 
-# Environment Requirement
+# 2. Environment Requirement
 
 - Minecraft reverse proxy server：
     - BungeeCord (not tested, compatible in theory)
@@ -34,14 +34,14 @@ message forwarding system among Minecraft grouped servers and instant messaging 
     - OpenJDK 17 (tested in `OpenJDK 64-Bit Server VM (build 17.0.1+12-LTS, mixed mode, sharing)`)
 
 
-# Configuration
+# 3. Configuration
 
 1. Copy plugin's `.jar` file to `plugins` folder.
 2. Create subdirectory `crosslink` in that folder.
 3. Create `messaging.json` and `api.json` in the folder created in previous step.
 4. Copy and edit configuration like the examples below.
 
-## Example `messaging.json`
+## 3.1 Example `messaging.json`
 
 ```json5
 {
@@ -167,7 +167,7 @@ message forwarding system among Minecraft grouped servers and instant messaging 
 }
 ```
 
-## Example `api.json`
+## 3.2 Example `api.json`
 
 ```json5
 {
@@ -180,7 +180,7 @@ message forwarding system among Minecraft grouped servers and instant messaging 
 ```
 
 
-# Open-source notice
+# 4. Open-source notice
 
 CrossLink is a free software and licensed under GPLv3.
 You can find the source code in [CrossLink's Homepage](https://github.com/keuin/crosslink).
