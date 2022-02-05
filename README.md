@@ -8,24 +8,25 @@
 
 # 1. CrossLink: rule-based intercommunicating framework for BungeeCord and Velocity
 
-CrossLink aims at bridging Minecraft chats and instant messaging platforms.
-CrossLink is a refactor of legacy [BungeeCross](https://github.com/hit-mc/BungeeCross).
-Heavy rewrite has been made to improve software quality.
+CrossLink aims at bridging Minecraft chats and instant messaging platforms together.
+CrossLink is a refactor of the legacy [BungeeCross](https://github.com/hit-mc/BungeeCross).
+Heavy rewrite has been made to improve the software quality.
 
-CrossLink treat every chat area in sub-servers of a Minecraft server group as separate *endpoints*. Different instant
-messaging software are different endpoints, too. Server operator create configuration files, which describes how the
-messages should be *routed* among distinct endpoints. This enables people from different Minecraft sub-server chats, even
-different instant messaging platforms, together, in a tidy way.
+CrossLink treats all chat areas in sub-servers of a Minecraft server group as separate *endpoint*s. Different instant
+messaging software are also different endpoints. Server operator creates configuration files, which describes how the
+messages should be *routed* among distinct endpoints. This enables people from different Minecraft sub-server chats
+and even different instant messaging platforms, chat together, in a tidy way.
 
-The routing is highly configurable. CrossLink does not care where the message comes from,
-and where it will ultimately go. The forwarding process is entirely controlled and defined by the server operator.
+Message forwarding is very configurable. CrossLink does not concern about where the messages come from,
+or where they will ultimately go. The forwarding process is entirely controlled by the server operator.
 Server operator combines **actions** like `filter by source`, `filter by content`, `replace by regexp`, `discard`
-and `forward` into **rules**. Finite rules line up a routing table. CrossLink forward every message according to
-the routing table. The combination of **actions** is versatile to help build a highly configurable 
-message forwarding system among Minecraft grouped servers and instant messaging platforms.
+and `forward` into **rules**. Some sequential rules line up a routing table. CrossLink forward messages according to
+the routing table. The combinations of **actions** are versatile to help build a highly configurable 
+message forwarding system among grouped Minecraft servers and instant messaging platforms.
 
-Currently, only Telegram is supported. If you wish to link to other instant messaging platforms,
-implementing that protocol in a *standalone* program is encouraged, which could be linked to CrossLink via `psmb` protocol.
+Currently, only Telegram is supported as an instant messaging platform.
+If you wish to link to other instant messaging platforms, implementing that protocol in a *standalone* program
+is encouraged, which could be linked to CrossLink with `psmb` protocol.
 
 
 # 2. Environment Requirement
