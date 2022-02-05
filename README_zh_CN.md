@@ -1,9 +1,9 @@
 # i18n README
 
-| Language             | File                               |
-|----------------------|------------------------------------|
-| English (US)         | [README.md](README.md)             |
-| Chinese (Simplified) | [README_zh_CN.md](README_zh_CN.md) |
+| Language     | File                               |
+|--------------|------------------------------------|
+| English (US) | [README.md](README.md)             |
+| 简体中文         | [README_zh_CN.md](README_zh_CN.md) |
 
 
 # 1. CrossLink: 基于规则路由的 BungeeCord/Velocity 消息互联框架
