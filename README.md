@@ -9,6 +9,8 @@
 # 1. CrossLink: rule-based intercommunicating framework for BungeeCord and Velocity
 
 CrossLink aims at bridging Minecraft chats and instant messaging platforms.
+CrossLink is a refactor of legacy [BungeeCross](https://github.com/hit-mc/BungeeCross).
+Heavy rewrite has been made to improve software quality.
 
 CrossLink treat every chat area in sub-servers of a Minecraft server group as separate *endpoints*. Different instant
 messaging software are different endpoints, too. Server operator create configuration files, which describes how the
@@ -21,6 +23,9 @@ Server operator combines **actions** like `filter by source`, `filter by content
 and `forward` into **rules**. Finite rules line up a routing table. CrossLink forward every message according to
 the routing table. The combination of **actions** is versatile to help build a highly configurable 
 message forwarding system among Minecraft grouped servers and instant messaging platforms.
+
+Currently, only Telegram is supported. If you wish to link to other instant messaging platforms,
+implementing that protocol in a *standalone* program is encouraged, which could be linked to CrossLink via `psmb` protocol.
 
 
 # 2. Environment Requirement
