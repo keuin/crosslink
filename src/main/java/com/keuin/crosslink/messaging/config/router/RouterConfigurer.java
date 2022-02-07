@@ -243,6 +243,7 @@ public class RouterConfigurer implements IRouterConfigurer {
 
     @Override
     public void configure(IRouterConfigurable router) throws JsonProcessingException, ConfigSyntaxError {
+        router.clearEndpoints();
         router.updateRuleChain(loadRuleChain(router, config));
     }
 

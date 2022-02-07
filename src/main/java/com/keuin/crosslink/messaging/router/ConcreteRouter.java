@@ -37,6 +37,10 @@ public class ConcreteRouter implements IRouter {
         return true;
     }
 
+    public void clearEndpoints() {
+        endpoints.clear();
+    }
+
     @Override
     public @NotNull Set<IEndpoint> resolveEndpoints(@NotNull String namespace, @NotNull Pattern idPattern) {
         Objects.requireNonNull(namespace);

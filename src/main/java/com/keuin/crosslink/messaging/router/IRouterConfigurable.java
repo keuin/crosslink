@@ -41,4 +41,9 @@ public interface IRouterConfigurable {
     @NotNull Set<IEndpoint> resolveEndpoints(@NotNull String namespace, @NotNull Pattern idPattern);
 
     void updateRuleChain(@NotNull List<IRule> newChain);
+
+    /**
+     * Remove all existing endpoints.
+     */
+    void clearEndpoints();
 }

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 public class ApiServer implements IApiServer {
     private final Logger logger = LoggerFactory.getLogger(LoggerNaming.name().of("api").of("server").toString());
-    private HttpServer server = null;
+    private volatile HttpServer server = null;
     private final ICoreAccessor coreAccessor;
 
     @Inject
@@ -38,6 +38,7 @@ public class ApiServer implements IApiServer {
     @Override
     public void startup(InetSocketAddress listen) throws ApiStartupException {
         try {
+            if (this.server != null) throw new IllegalStateException("API server is already started.");
             this.server = HttpServer.create(listen, 0);
             ImmutableMap.<String, JsonReqHandler>builder()
                     .put("/", new JsonReqHandler("GET") {
