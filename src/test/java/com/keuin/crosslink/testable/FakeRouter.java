@@ -47,6 +47,11 @@ public class FakeRouter implements IRouter {
         this.rules = newChain;
     }
 
+    @Override
+    public void clearEndpoints() {
+        endpoints.clear();
+    }
+
     public List<IMessage> getMessages() {
         return messages;
     }

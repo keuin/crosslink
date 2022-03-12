@@ -41,7 +41,8 @@ public class BungeeAccessor implements ICoreAccessor {
         var checker = new BungeeServerStatusChecker(
                 plugin.getProxy().getServers().values(),
                 plugin,
-                GlobalConfigManager.getInstance().getConfig().pingTimeoutMillis()
+//                GlobalConfigManager.getInstance().getConfig().pingTimeoutMillis()
+                2000
         );
         checker.ping((infoMap) -> callback.accept(infoMap.entrySet().stream().map(
                 (ent) -> new ServerInfo(ent.getKey().getName(), ent.getValue())
