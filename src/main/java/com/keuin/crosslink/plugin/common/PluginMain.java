@@ -71,7 +71,7 @@ public final class PluginMain {
                 logger.debug("Loading rule chain.");
                 var rc = new RouterConfigurer(routing);
                 rc.configure(messageRouter); // update routing table, clear endpoints
-                logger.debug("Message router is configured successfully.");
+                logger.debug("Finish configuring message router.");
             } catch (JsonProcessingException | ConfigSyntaxError ex) {
                 logger.error("Failed to load routing config.", ex);
                 throw new RuntimeException(ex);
@@ -126,13 +126,11 @@ public final class PluginMain {
             logger.error("Failed to start API server", ex);
             throw new RuntimeException(ex);
         }
-
-        logger.info("Finish initializing.");
     }
 
     public void enable() {
         // TODO refactor setup and teardown routine, split into hooks
-        logger.info("Loading config from disk...");
+        logger.info("Loading config from disk.");
         try {
             GlobalConfigManager.initializeGlobalManager(environment.pluginDataPath().toFile());
         } catch (ConfigLoadException | IOException ex) {
