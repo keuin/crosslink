@@ -20,8 +20,11 @@ public class GlobalConfigManager {
     private JsonNode configMessaging; // mutable root node of file "messaging.json"
     private JsonNode configApi; // mutable root node of file "api.json"
 
-    private GlobalConfigManager() {
+    private final File configFileDirectory;
+
+    private GlobalConfigManager(File configFileDirectory) {
         mapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+        this.configFileDirectory = configFileDirectory;
     }
 
     /**
@@ -30,24 +33,37 @@ public class GlobalConfigManager {
      *
      * @throws ConfigLoadException failed to load. The 'loaded' status will be set to false.
      */
-    public static void initializeGlobalManager(@NotNull File configFile) throws ConfigLoadException, IOException {
-        Objects.requireNonNull(configFile);
+    public static void initializeGlobalManager(@NotNull File configFileDirectory) throws ConfigLoadException, IOException {
+        Objects.requireNonNull(configFileDirectory);
         synchronized (lock) {
             if (instance == null) {
                 throw new IllegalStateException("already initialized");
             }
-            instance = new GlobalConfigManager();
+            instance = new GlobalConfigManager(configFileDirectory);
         }
-        instance.loadConfig(configFile);
+        instance.loadConfig();
     }
 
-    private void loadConfig(File configDirectory) throws IOException {
-        try (var fis = new FileInputStream(new File(configDirectory, "messaging.json"))) {
-            configMessaging = Optional.ofNullable(mapper.readTree(fis)).orElse(mapper.readTree("{}"));
+    public static void destroyGlobalInstance() {
+        synchronized (lock) {
+            instance = null;
         }
-        try (var fis = new FileInputStream(new File(configDirectory, "api.json"))) {
-            configApi = Optional.ofNullable(mapper.readTree(fis)).orElse(mapper.readTree("{}"));
+    }
+
+    /**
+     * Load config from file.
+     */
+    public void loadConfig() throws IOException {
+        JsonNode newConfigMessaging, newConfigApi;
+        try (var fis = new FileInputStream(new File(configFileDirectory, "messaging.json"))) {
+            newConfigMessaging = Optional.ofNullable(mapper.readTree(fis)).orElse(mapper.readTree("{}"));
         }
+        try (var fis = new FileInputStream(new File(configFileDirectory, "api.json"))) {
+            newConfigApi = Optional.ofNullable(mapper.readTree(fis)).orElse(mapper.readTree("{}"));
+        }
+        // make those two updates atomic (if any exception appeared)
+        configMessaging = newConfigMessaging;
+        configApi = newConfigApi;
     }
 
     public static @NotNull GlobalConfigManager getInstance() {

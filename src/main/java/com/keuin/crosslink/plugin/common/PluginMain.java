@@ -134,8 +134,7 @@ public final class PluginMain {
         // TODO refactor setup and teardown routine, split into hooks
         logger.info("Loading config from disk...");
         try {
-            GlobalConfigManager.initializeGlobalManager(new File(
-                    environment.pluginDataPath().toFile(), "messaging.json"));
+            GlobalConfigManager.initializeGlobalManager(environment.pluginDataPath().toFile());
         } catch (ConfigLoadException | IOException ex) {
             logger.error("Failed to load configuration", ex);
             throw new RuntimeException(ex);
@@ -149,12 +148,13 @@ public final class PluginMain {
         logger.info("Stopping API server.");
         apiServer.shutdown();
         logger.info("CrossLink is disabled.");
+        GlobalConfigManager.destroyGlobalInstance();
     }
 
     // may throw unchecked exception
     public void reload() {
         disable();
-        initialize();
+        enable();
     }
 
     private String capital(String s) {
