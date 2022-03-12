@@ -48,7 +48,7 @@ dependencies {
     // TODO: reduce .jar file size
 
     // IDEA annotations
-    implementation 'org.jetbrains:annotations:22.0.0'
+    implementation 'org.jetbrains:annotations:23.0.0'
     // JUnit
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
@@ -58,21 +58,21 @@ dependencies {
     // BungeeCord
     provided 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
     // https://mvnrepository.com/artifact/net.time4j/time4j-base
-    shadow 'net.time4j:time4j-base:5.8'
+    shadow 'net.time4j:time4j-base:5.9'
     // https://mvnrepository.com/artifact/com.google.inject/guice
-    shadow 'com.google.inject:guice:5.0.1'
+    shadow 'com.google.inject:guice:5.1.0'
     // https://mvnrepository.com/artifact/net.kyori/adventure-api
-    shadow 'net.kyori:adventure-api:4.9.3' // bungeecord does not have this, so shadow
+    shadow 'net.kyori:adventure-api:4.10.1' // bungeecord does not have this, so shadow
     // https://mvnrepository.com/artifact/net.kyori/adventure-text-serializer-plain
-    shadow 'net.kyori:adventure-text-serializer-plain:4.9.3'
+    shadow 'net.kyori:adventure-text-serializer-plain:4.10.1'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-    shadow 'com.fasterxml.jackson.core:jackson-core:2.13.0'
+    shadow 'com.fasterxml.jackson.core:jackson-core:2.13.2'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    shadow 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+    shadow 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
     // https://mvnrepository.com/artifact/com.github.pengrad/java-telegram-bot-api
-    shadow 'com.github.pengrad:java-telegram-bot-api:5.5.0'
+    shadow 'com.github.pengrad:java-telegram-bot-api:5.7.0'
     // https://mvnrepository.com/artifact/org.mongodb/bson
-    shadow 'org.mongodb:bson:4.4.1'
+    shadow 'org.mongodb:bson:4.5.0'
 }
 
 shadowJar {
