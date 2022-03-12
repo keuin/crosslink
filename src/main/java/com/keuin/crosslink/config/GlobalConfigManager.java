@@ -36,7 +36,7 @@ public class GlobalConfigManager {
     public static void initializeGlobalManager(@NotNull File configFileDirectory) throws ConfigLoadException, IOException {
         Objects.requireNonNull(configFileDirectory);
         synchronized (lock) {
-            if (instance == null) {
+            if (instance != null) {
                 throw new IllegalStateException("already initialized");
             }
             instance = new GlobalConfigManager(configFileDirectory);

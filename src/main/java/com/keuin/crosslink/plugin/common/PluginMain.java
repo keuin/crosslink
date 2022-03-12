@@ -73,7 +73,7 @@ public final class PluginMain {
                 rc.configure(messageRouter); // update routing table, clear endpoints
                 logger.debug("Message router is configured successfully.");
             } catch (JsonProcessingException | ConfigSyntaxError ex) {
-                logger.error("Failed to load routing config", ex);
+                logger.error("Failed to load routing config.", ex);
                 throw new RuntimeException(ex);
             }
 
@@ -136,7 +136,7 @@ public final class PluginMain {
         try {
             GlobalConfigManager.initializeGlobalManager(environment.pluginDataPath().toFile());
         } catch (ConfigLoadException | IOException ex) {
-            logger.error("Failed to load configuration", ex);
+            logger.error("Failed to load configuration.", ex);
             throw new RuntimeException(ex);
         }
         logger.info("Config files are loaded.");
