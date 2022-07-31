@@ -8,14 +8,18 @@ import com.keuin.crosslink.messaging.sender.ISender;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bson.BsonBinaryReader;
-import org.bson.BsonType;
+import org.bson.*;
+import org.bson.codecs.BsonDocumentCodec;
+import org.bson.codecs.EncoderContext;
+import org.bson.io.BasicOutputBuffer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.zip.GZIPInputStream;
@@ -68,9 +72,23 @@ public class PsmbMessageSerializer {
     }
 
     public static byte[] serialize(@NotNull IMessage message) {
-        // TODO
         Objects.requireNonNull(message);
-        throw new RuntimeException("not implemented");
+        var doc = new BsonDocument()
+                .append("endpoint", new BsonString(message.source().friendlyName()))
+                .append("sender", new BsonString(message.sender().plainTextId()))
+                .append("msg", new BsonArray(Collections.singletonList(
+                        new BsonArray(Arrays.asList(
+                                new BsonInt32(0),
+                                new BsonBinary(message.pureString().getBytes(StandardCharsets.UTF_8))
+                        ))
+                )))
+                .append("time", new BsonInt64(System.currentTimeMillis())); // FIXME current time != message time
+        var codec = new BsonDocumentCodec();
+        try (var writeBuffer = new BasicOutputBuffer();
+             var writer = new BsonBinaryWriter(writeBuffer)) {
+            codec.encode(writer, doc, EncoderContext.builder().build());
+            return Arrays.copyOf(writeBuffer.getInternalBuffer(), writeBuffer.getSize());
+        }
     }
 
     public static @NotNull IMessage deserialize(@NotNull ByteBuffer buffer, @NotNull IEndpoint source) throws IllegalPackedMessageException {
