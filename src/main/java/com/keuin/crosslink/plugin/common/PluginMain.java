@@ -58,7 +58,8 @@ public final class PluginMain {
         logger.info("Initializing components.");
         // initialize message routing
         logger.info("Initializing message routing.");
-        var endpoints = new HashSet<>(coreAccessor.getServerEndpoints()); // All local and remote endpoints. remotes will be added later
+        // Contains all enabled endpoints, including local and remote ones. Remote endpoints will be added later.
+        final var endpoints = new HashSet<>(coreAccessor.getServerEndpoints());
         try {
             var messaging = GlobalConfigManager.getInstance().messaging();
             var routing = Optional.ofNullable(messaging.get("routing"))
@@ -95,10 +96,14 @@ public final class PluginMain {
                 logger.error("Invalid remote endpoint", ex);
                 throw new RuntimeException(ex);
             }
+
         } catch (JsonProcessingException ex) {
             logger.error("Failed to parse JSON config", ex);
             throw new RuntimeException(ex);
         }
+
+        // API endpoint (send messages from HTTP api)
+
 
         // register all endpoints on the router
         for (IEndpoint ep : endpoints) {

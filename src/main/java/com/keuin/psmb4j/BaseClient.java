@@ -39,6 +39,7 @@ public abstract class BaseClient implements AutoCloseable {
      * and should be called only once.
      * If an IO error occurred when doing some operation,
      * this client must be reconnected before next operations.
+     *
      * @throws IOException if a network error occurred
      */
     public void connect() throws IOException {
@@ -74,19 +75,19 @@ public abstract class BaseClient implements AutoCloseable {
     public void keepAlive() throws IOException {
         final var nop = new byte[]{'N', 'O', 'P'};
         final var nil = new byte[]{'N', 'I', 'L'};
-        synchronized (socketReadLock) {
-            synchronized (socketWriteLock) {
-                // lock the whole bidirectional communication
-                os.write(nop);
-                os.flush();
-                // wait for a response NIL
-                var response = InputStreamUtils.readBytes(is, 3);
-                if (!Arrays.equals(response, nil)) {
-                    throw new RuntimeException("illegal command from server: " +
-                            new String(response, StandardCharsets.US_ASCII));
-                }
-            }
+//        synchronized (socketReadLock) {
+        synchronized (socketWriteLock) {
+            // lock the whole bidirectional communication
+            os.write(nop);
+            os.flush();
+//                // wait for a response NIL
+//                var response = InputStreamUtils.readBytes(is, 3);
+//                if (!Arrays.equals(response, nil)) {
+//                    throw new RuntimeException("illegal command from server: " +
+//                            new String(response, StandardCharsets.US_ASCII));
+//                }
         }
+//        }
     }
 
     public void disconnect() {

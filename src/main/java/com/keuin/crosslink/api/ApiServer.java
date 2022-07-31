@@ -101,6 +101,22 @@ public class ApiServer implements IApiServer {
                             logger.debug("Finished reading server status. Sending response to HTTP client.");
                         }
                     })
+                    .put("/message", new JsonReqHandler() {
+                        @Override
+                        protected void handle(JsonHttpExchange exchange) throws IOException {
+                            var req = exchange.getRequestBody();
+                            var sender = req.get("sender");
+                            var message = req.get("message");
+                            if (!sender.isTextual() || !message.isTextual()) {
+                                exchange.setResponseCode(400);
+                                var resp = exchange.getResponseBody();
+                                resp.put("success", false);
+                                resp.put("message", "Illegal parameter type.");
+                                return;
+                            }
+
+                        }
+                    })
                     .build().forEach((p, h) -> server.createContext(p).setHandler(h));
             server.start();
             logger.info("API server is listening on {}:{}.",

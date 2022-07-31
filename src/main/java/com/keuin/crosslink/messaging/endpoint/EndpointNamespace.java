@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public enum EndpointNamespace {
-    SERVER("server"), REMOTE("remote");
+    SERVER("server"), REMOTE("remote"), SYSTEM("system");
     private final String namespace;
 
     EndpointNamespace(String namespace) {
