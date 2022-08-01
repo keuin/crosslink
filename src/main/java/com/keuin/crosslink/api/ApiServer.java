@@ -7,6 +7,8 @@ import com.keuin.crosslink.api.request.JsonHttpExchange;
 import com.keuin.crosslink.api.request.JsonReqHandler;
 import com.keuin.crosslink.data.PlayerInfo;
 import com.keuin.crosslink.data.ServerInfo;
+import com.keuin.crosslink.messaging.endpoint.system.ApiEndpoint;
+import com.keuin.crosslink.messaging.sender.ISender;
 import com.keuin.crosslink.plugin.common.ICoreAccessor;
 import com.keuin.crosslink.util.LoggerNaming;
 import com.sun.net.httpserver.HttpServer;
@@ -16,7 +18,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -105,16 +109,23 @@ public class ApiServer implements IApiServer {
                         @Override
                         protected void handle(JsonHttpExchange exchange) throws IOException {
                             var req = exchange.getRequestBody();
-                            var sender = req.get("sender");
-                            var message = req.get("message");
-                            if (!sender.isTextual() || !message.isTextual()) {
+                            var sender = req.get("sender").textValue();
+                            var message = req.get("message").textValue();
+                            if (sender == null || message == null) {
                                 exchange.setResponseCode(400);
                                 var resp = exchange.getResponseBody();
                                 resp.put("success", false);
                                 resp.put("message", "Illegal parameter type.");
                                 return;
                             }
-
+                            // the message will be sent from ApiEndpoint (system:api)
+                            ApiEndpoint.INSTANCE.offerMessage(
+                                    ISender.create(
+                                            sender,
+                                            UUID.nameUUIDFromBytes(sender.getBytes(StandardCharsets.UTF_8))
+                                    ),
+                                    message
+                            );
                         }
                     })
                     .build().forEach((p, h) -> server.createContext(p).setHandler(h));

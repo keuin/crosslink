@@ -12,6 +12,7 @@ import com.keuin.crosslink.messaging.config.remote.InvalidEndpointConfigurationE
 import com.keuin.crosslink.messaging.config.remote.RemoteEndpointFactory;
 import com.keuin.crosslink.messaging.config.router.RouterConfigurer;
 import com.keuin.crosslink.messaging.endpoint.IEndpoint;
+import com.keuin.crosslink.messaging.endpoint.system.ApiEndpoint;
 import com.keuin.crosslink.messaging.router.IRouter;
 import com.keuin.crosslink.plugin.common.environ.PluginEnvironment;
 import com.keuin.crosslink.util.LoggerNaming;
@@ -103,7 +104,8 @@ public final class PluginMain {
         }
 
         // API endpoint (send messages from HTTP api)
-
+        ApiEndpoint.INSTANCE.setRouter(messageRouter);
+        messageRouter.addEndpoint(ApiEndpoint.INSTANCE);
 
         // register all endpoints on the router
         for (IEndpoint ep : endpoints) {
