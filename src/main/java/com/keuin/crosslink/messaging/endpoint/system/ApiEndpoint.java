@@ -43,7 +43,7 @@ public class ApiEndpoint implements IEndpoint {
 
     @Override
     public @NotNull String id() {
-        return "api";
+        return "system"; // TODO move this into config file
     }
 
     @Override
