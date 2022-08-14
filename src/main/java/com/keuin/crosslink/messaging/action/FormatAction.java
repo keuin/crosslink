@@ -9,14 +9,12 @@ import net.kyori.adventure.text.format.TextDecoration;
 public class FormatAction extends BaseReplaceAction {
     public FormatAction(TextColor color) {
         super((message) -> {
-            // FIXME non-text-based message may lose information?
             var formatted = Messaging.duplicate(message.kyoriMessage());
             return IMessage.create(message.source(), message.sender(), formatted.color(color));
         });
     }
     public FormatAction(TextDecoration decor) {
         super((message) -> {
-            // FIXME non-text-based message may lose information?
             // FIXME clear other decorations
             var formatted = Messaging.duplicate(message.kyoriMessage());
             return IMessage.create(message.source(), message.sender(), formatted.decorate(decor));
@@ -24,7 +22,6 @@ public class FormatAction extends BaseReplaceAction {
     }
     public FormatAction(Style style) {
         super((message) -> {
-            // FIXME non-text-based message may lose information?
             // FIXME clear other styles
             var formatted = Messaging.duplicate(message.kyoriMessage());
             return IMessage.create(message.source(), message.sender(), formatted.style(style));

@@ -5,11 +5,10 @@ import com.keuin.crosslink.data.PlayerInfo;
 import com.keuin.crosslink.data.ServerInfo;
 import com.keuin.crosslink.messaging.endpoint.IEndpoint;
 import com.keuin.crosslink.messaging.endpoint.local.BungeeServerChatEndpoint;
+import com.keuin.crosslink.messaging.util.Messaging;
 import com.keuin.crosslink.plugin.bungee.checker.BungeeServerStatusChecker;
 import com.keuin.crosslink.plugin.common.ICoreAccessor;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.List;
 import java.util.Objects;
@@ -63,9 +62,7 @@ public class BungeeAccessor implements ICoreAccessor {
     public void sendPlayerMessage(UUID playerUuid, Component message) {
         var player = plugin.getProxy().getPlayer(playerUuid);
         if (player == null) return;
-        // convert between two incompatible Component objects using legacy string such as "&6Hello &b&lworld&c!"
-        var msg = TextComponent
-                .fromLegacyText(LegacyComponentSerializer.legacySection().serialize(message));
+        var msg = Messaging.kyoriComponentToBungee(message);
         player.sendMessage(msg);
     }
 }

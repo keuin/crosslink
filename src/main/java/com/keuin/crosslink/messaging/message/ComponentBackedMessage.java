@@ -6,6 +6,7 @@ import com.keuin.crosslink.messaging.util.Messaging;
 import com.keuin.crosslink.util.LazyEvaluated;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -46,5 +47,8 @@ public class ComponentBackedMessage implements IMessage {
         return Messaging.duplicate(component);
     }
 
-    // FIXME implement bungeeMessage
+    @Override
+    public BaseComponent[] bungeeMessage() {
+        return Messaging.kyoriComponentToBungee(component);
+    }
 }

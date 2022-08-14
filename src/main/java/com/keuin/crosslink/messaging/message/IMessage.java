@@ -3,6 +3,7 @@ package com.keuin.crosslink.messaging.message;
 
 import com.keuin.crosslink.messaging.endpoint.IEndpoint;
 import com.keuin.crosslink.messaging.sender.ISender;
+import com.keuin.crosslink.messaging.util.Messaging;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.Style;
@@ -23,8 +24,11 @@ public interface IMessage {
 
     @NotNull String pureString();
 
+    /**
+     * This is a fallback (basic) implementation.
+     * Color information will be discarded after converting.
+     */
     default Component kyoriMessage() {
-        // FIXME keep color data
         return Component.text().content(pureString()).build();
     }
 
@@ -49,8 +53,11 @@ public interface IMessage {
         return new ComponentBackedMessage(source, sender, component);
     }
 
+    /**
+     * This is a fallback (basic) implementation.
+     * Color information will be discarded after converting.
+     */
     default BaseComponent[] bungeeMessage() {
-        // FIXME keep color data
         return new ComponentBuilder().append(pureString()).create();
     }
 
