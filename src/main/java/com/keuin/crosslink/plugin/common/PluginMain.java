@@ -13,8 +13,10 @@ import com.keuin.crosslink.messaging.config.remote.RemoteEndpointFactory;
 import com.keuin.crosslink.messaging.config.router.RouterConfigurer;
 import com.keuin.crosslink.messaging.endpoint.IEndpoint;
 import com.keuin.crosslink.messaging.endpoint.system.ApiEndpoint;
+import com.keuin.crosslink.messaging.history.IHistoricMessageRecorder;
 import com.keuin.crosslink.messaging.router.IRouter;
 import com.keuin.crosslink.plugin.common.environ.PluginEnvironment;
+import com.keuin.crosslink.plugin.common.event.PlayerConnectEvent;
 import com.keuin.crosslink.util.LoggerNaming;
 import com.keuin.crosslink.util.StartupMessagePrinter;
 import com.keuin.crosslink.util.version.NewVersionChecker;
@@ -35,15 +37,21 @@ public final class PluginMain {
     private final IApiServer apiServer;
     private final ICoreAccessor coreAccessor;
     private final IRouter messageRouter;
+    private final IEventBus eventBus;
+    private final IHistoricMessageRecorder historicMessageRecorder;
     private final Logger logger;
 
     @Inject
     public PluginMain(ICoreAccessor coreAccessor,
                       IRouter messageRouter,
                       IApiServer apiServer,
-                      PluginEnvironment pluginEnvironment) {
+                      PluginEnvironment pluginEnvironment,
+                      IEventBus eventBus,
+                      IHistoricMessageRecorder historicMessageRecorder) {
         this.coreAccessor = coreAccessor;
         this.messageRouter = messageRouter;
+        this.eventBus = eventBus;
+        this.historicMessageRecorder = historicMessageRecorder;
         this.apiServer = apiServer;
         this.environment = pluginEnvironment;
         this.logger = environment.logger();
@@ -60,13 +68,29 @@ public final class PluginMain {
         // initialize message routing
         logger.info("Initializing message routing.");
         // Contains all enabled endpoints, including local and remote ones. Remote endpoints will be added later.
-        final var endpoints = new HashSet<>(coreAccessor.getServerEndpoints());
+        final var endpoints = new HashSet<IEndpoint>();
         try {
             var messaging = GlobalConfigManager.getInstance().messaging();
+            var local = Optional.ofNullable(messaging.get("local"))
+                    .orElse(mapper.readTree("{}"));
             var routing = Optional.ofNullable(messaging.get("routing"))
                     .orElse(mapper.readTree("[]"));
             var remote = Optional.ofNullable(messaging.get("remotes"))
                     .orElse(mapper.readTree("[]"));
+
+            // load local server endpoints
+            final var locals = coreAccessor.getServerEndpoints();
+            final var ttlSeconds = Optional.ofNullable(local.get("message_playback_seconds"))
+                    .map(JsonNode::asLong).orElse(-1L);
+            if (ttlSeconds > 0) {
+                // enable message replay
+                logger.info("Message replay is enabled. TTL: ");
+                eventBus.registerEventHandler(
+                        (PlayerConnectEvent) (player, uuid) -> historicMessageRecorder.getMessages()
+                                .forEach(msg -> coreAccessor.sendPlayerMessage(uuid, msg.kyoriMessage()))
+                );
+            }
+            endpoints.addAll(locals);
 
             // load routing table
             try {

@@ -22,4 +22,16 @@ public interface IHistoricMessageRecorder {
      * @return an {@link List} containing all recent messages in the time scope.
      */
     List<IMessage> getMessages();
+
+    /**
+     * Get message TTL.
+     * @return the message TTL milliseconds.
+     */
+    long getTTL();
+
+    /**
+     * Set message TTL. (a workaround to implement later initialization)
+     * @param ttl the message TTL milliseconds.
+     */
+    void setTTL(long ttl);
 }

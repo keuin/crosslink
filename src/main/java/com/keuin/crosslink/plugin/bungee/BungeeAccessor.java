@@ -8,10 +8,13 @@ import com.keuin.crosslink.messaging.endpoint.IEndpoint;
 import com.keuin.crosslink.messaging.endpoint.local.BungeeServerChatEndpoint;
 import com.keuin.crosslink.plugin.bungee.checker.BungeeServerStatusChecker;
 import com.keuin.crosslink.plugin.common.ICoreAccessor;
+import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -54,5 +57,14 @@ public class BungeeAccessor implements ICoreAccessor {
         return plugin.getProxy().getServers().values().stream()
                 .map((si) -> new BungeeServerChatEndpoint(si, plugin.getProxy(), plugin))
                 .collect(Collectors.toUnmodifiableSet());
+    }
+
+    @Override
+    public void sendPlayerMessage(UUID playerUuid, Component message) {
+        var player = plugin.getProxy().getPlayer(playerUuid);
+        if (player == null) return;
+        // FIXME keep color data
+        var msg = new ComponentBuilder().append(message.toString()).create();
+        player.sendMessage(msg);
     }
 }

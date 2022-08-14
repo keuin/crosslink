@@ -6,10 +6,12 @@ import com.keuin.crosslink.plugin.common.PluginMain;
 import com.keuin.crosslink.plugin.common.ProxyType;
 import com.keuin.crosslink.plugin.common.environ.PluginEnvironment;
 import com.keuin.crosslink.plugin.common.module.CommonApiServerProvider;
+import com.keuin.crosslink.plugin.common.module.CommonHistoricMessageRecorderModule;
 import com.keuin.crosslink.plugin.common.module.CommonIRouterModule;
 import com.keuin.crosslink.plugin.common.module.CommonPluginEnvironProvider;
 import com.keuin.crosslink.plugin.velocity.module.VelocityAccessorModule;
 import com.keuin.crosslink.plugin.velocity.module.VelocityApiServerModule;
+import com.keuin.crosslink.plugin.velocity.module.VelocityEventBusModule;
 import com.keuin.crosslink.util.LoggerNaming;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -48,6 +50,8 @@ public final class VelocityMainWrapper {
         var injector = Guice.createInjector(
                 new VelocityAccessorModule(this),
                 new VelocityApiServerModule(),
+                new VelocityEventBusModule(),
+                new CommonHistoricMessageRecorderModule(),
                 new CommonIRouterModule(),
                 new CommonPluginEnvironProvider(new PluginEnvironment(
                         ProxyType.VELOCITY, LoggerFactory.getLogger(LoggerNaming.name().toString()), pluginDataPath)),

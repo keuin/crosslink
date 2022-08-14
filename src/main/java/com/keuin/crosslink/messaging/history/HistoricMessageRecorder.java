@@ -9,12 +9,16 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class HistoricMessageRecorder implements IHistoricMessageRecorder {
-    private final long ttlMillis;
+    private long ttlMillis;
     private final LinkedList<Pair<Long, IMessage>> que = new LinkedList<>();
     private final Object lock = new Object();
 
     public HistoricMessageRecorder(long ttlMillis) {
         this.ttlMillis = ttlMillis;
+    }
+
+    public HistoricMessageRecorder() {
+        this.ttlMillis = 0;
     }
 
     private void clean() {
@@ -27,9 +31,11 @@ public class HistoricMessageRecorder implements IHistoricMessageRecorder {
             que.removeFirst();
         }
     }
+
     /**
      * Add and memorize a message.
      * Note: this implementation is synchronized. Be caution if you requires a high performance.
+     *
      * @param message the message to save.
      */
     @Override
@@ -47,5 +53,15 @@ public class HistoricMessageRecorder implements IHistoricMessageRecorder {
             clean();
             return que.stream().map(Pair::getV).collect(Collectors.toList());
         }
+    }
+
+    @Override
+    public long getTTL() {
+        return ttlMillis;
+    }
+
+    @Override
+    public void setTTL(long ttl) {
+        this.ttlMillis = ttl;
     }
 }

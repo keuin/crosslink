@@ -42,6 +42,13 @@ Minecraft 群组服务器消息互联方案。
 
 ```json5
 {
+  "local": {
+    // when a player joins the game,
+    // show him recent messages sent before he has joined the server,
+    // which live no longer than this time.
+    // set a non-positive value to disable this feature
+    "message_playback_seconds": 600
+  },
   "remotes": [
     {
       "type": "telegram",

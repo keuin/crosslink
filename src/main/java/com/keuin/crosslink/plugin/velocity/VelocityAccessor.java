@@ -7,9 +7,11 @@ import com.keuin.crosslink.messaging.endpoint.IEndpoint;
 import com.keuin.crosslink.messaging.endpoint.local.VelocityServerChatEndpoint;
 import com.keuin.crosslink.plugin.common.ICoreAccessor;
 import com.keuin.crosslink.plugin.velocity.checker.VelocityServerStatusChecker;
+import net.kyori.adventure.text.Component;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -50,5 +52,12 @@ public class VelocityAccessor implements ICoreAccessor {
         return plugin.getProxy().getAllServers().stream()
                 .map((si) -> new VelocityServerChatEndpoint(si, plugin.getProxy(), plugin))
                 .collect(Collectors.toUnmodifiableSet());
+    }
+
+    @Override
+    public void sendPlayerMessage(UUID playerUuid, Component message) {
+        var player = plugin.getProxy().getPlayer(playerUuid).orElse(null);
+        if (player == null) return;
+        player.sendMessage(message);
     }
 }
