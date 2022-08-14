@@ -25,7 +25,9 @@ import com.keuin.crosslink.util.StartupMessagePrinter;
 import com.keuin.crosslink.util.version.NewVersionChecker;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,15 +107,24 @@ public final class PluginMain {
                                     "Sending " + ms.size() + " history message(s).");
                             ms.stream()
                                     .map(kv -> Component.join(
-                                            JoinConfiguration.separator(Component.text(" ")),
-                                            Component.text(
+                                            JoinConfiguration.separator(Component.text(" ")), // spacing
+                                            Component.text( // message time
                                                     String.format(
                                                             "(%s)",
                                                             DateUtil.getOffsetString(LocalDateTime.ofInstant(
                                                                     Instant.ofEpochMilli(kv.getK()),
                                                                     TimeZone.getDefault().toZoneId()))),
-                                                    TextColor.color(0x00AA00)),
-                                            kv.getV().kyoriMessage()))
+                                                    NamedTextColor.DARK_GREEN
+                                            ),
+                                            Component.text( // <trueKeuin@survival>
+                                                    String.format("<%s@%s>",
+                                                            kv.getV().sender().plainTextId(),
+                                                            kv.getV().source().friendlyName()),
+                                                    TextColor.color(NamedTextColor.GRAY),
+                                                    TextDecoration.ITALIC
+                                            ),
+                                            kv.getV().kyoriMessage().colorIfAbsent(NamedTextColor.GRAY) // message body
+                                    ))
                                     .forEach(msg -> coreAccessor.sendPlayerMessage(uuid, msg));
                         }
                 );
