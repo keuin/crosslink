@@ -1,6 +1,5 @@
 package com.keuin.crosslink.messaging.util;
 
-import com.keuin.crosslink.messaging.filter.ReIdFilter;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

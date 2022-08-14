@@ -5,7 +5,6 @@ import com.keuin.crosslink.messaging.endpoint.IEndpoint;
 import com.keuin.crosslink.messaging.util.Messaging;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 

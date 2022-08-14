@@ -6,12 +6,10 @@ import com.keuin.crosslink.messaging.action.RouteAction;
 import com.keuin.crosslink.messaging.filter.IFilter;
 import com.keuin.crosslink.messaging.filter.ReIdFilter;
 import com.keuin.crosslink.messaging.message.IMessage;
-import com.keuin.crosslink.messaging.rule.IRule;
 import com.keuin.crosslink.messaging.rule.ImmutableRule;
 import com.keuin.crosslink.messaging.rule.ObjectType;
 import com.keuin.crosslink.messaging.sender.ISender;
 import com.keuin.crosslink.testable.FakeEndpoint;
-import com.keuin.crosslink.testable.FakeRouter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,14 +19,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ConcreteRouterTest {
 
     private ConcreteRouter router;
-    private FakeEndpoint ep1 = new FakeEndpoint("a");
-    private FakeEndpoint ep2 = new FakeEndpoint("b");
-    private FakeEndpoint ep3 = new FakeEndpoint("c");
+    private final FakeEndpoint ep1 = new FakeEndpoint("a");
+    private final FakeEndpoint ep2 = new FakeEndpoint("b");
+    private final FakeEndpoint ep3 = new FakeEndpoint("c");
 
     @BeforeEach
     void setUp() {
