@@ -120,7 +120,7 @@ public final class PluginMain {
                                                     String.format("<%s@%s>",
                                                             kv.getV().sender().plainTextId(),
                                                             kv.getV().source().friendlyName()),
-                                                    TextColor.color(NamedTextColor.GRAY),
+                                                    TextColor.color(NamedTextColor.LIGHT_PURPLE),
                                                     TextDecoration.ITALIC
                                             ),
                                             kv.getV().kyoriMessage().colorIfAbsent(NamedTextColor.GRAY) // message body
