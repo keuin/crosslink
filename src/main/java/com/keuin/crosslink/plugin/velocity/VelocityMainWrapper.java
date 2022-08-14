@@ -32,6 +32,7 @@ import java.nio.file.Path;
 public final class VelocityMainWrapper {
     private final ProxyServer proxy;
     private final PluginMain plugin;
+    private final VelocityEventBus eventBus;
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
@@ -41,13 +42,15 @@ public final class VelocityMainWrapper {
         // shutdown event
         proxy.getEventManager().register(
                 this, ProxyShutdownEvent.class, (ev) -> plugin.disable());
+        // register event bus
+        proxy.getEventManager().register(this, eventBus);
+        // main initialization
         plugin.enable();
     }
 
     @Inject
     public VelocityMainWrapper(ProxyServer proxy, Logger logger, @DataDirectory Path pluginDataPath) {
-        var eventBus = new VelocityEventBus(this, proxy);
-        proxy.getEventManager().register(this, eventBus);
+        this.eventBus = new VelocityEventBus(this, proxy);
         this.proxy = proxy;
         var injector = Guice.createInjector(
                 new VelocityAccessorModule(this),

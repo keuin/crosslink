@@ -1,7 +1,6 @@
 package com.keuin.crosslink.plugin.velocity;
 
 import com.google.inject.Inject;
-import com.keuin.crosslink.plugin.bungee.BungeeEventBus;
 import com.keuin.crosslink.plugin.common.IEventBus;
 import com.keuin.crosslink.plugin.common.event.EventHandler;
 import com.keuin.crosslink.plugin.common.event.PlayerConnectEvent;
@@ -22,7 +21,7 @@ import java.util.logging.Logger;
 public class VelocityEventBus implements IEventBus {
     private final Object plugin;
     private final ProxyServer velocity;
-    private final Logger logger = Logger.getLogger(BungeeEventBus.class.getName());
+    private final Logger logger = Logger.getLogger(VelocityEventBus.class.getName());
     private final Set<UUID> connectedPlayers = Collections.newSetFromMap(new ConcurrentHashMap<>()); // all players connected to the proxy
     private final Map<UUID, ServerInfo> serverPlayerLastJoined = new HashMap<>(); // the server players last connected to
 
