@@ -123,7 +123,7 @@ public final class PluginMain {
                                                     TextColor.color(NamedTextColor.LIGHT_PURPLE),
                                                     TextDecoration.ITALIC
                                             ),
-                                            kv.getV().kyoriMessage().colorIfAbsent(NamedTextColor.GRAY) // message body
+                                            kv.getV().kyoriMessage().color(NamedTextColor.GRAY) // message body
                                     ))
                                     .forEach(msg -> coreAccessor.sendPlayerMessage(uuid, msg));
                         }
