@@ -1,6 +1,7 @@
 package com.keuin.crosslink.messaging.history;
 
 import com.keuin.crosslink.messaging.message.IMessage;
+import com.keuin.crosslink.util.Pair;
 
 import java.util.List;
 
@@ -13,24 +14,28 @@ import java.util.List;
 public interface IHistoricMessageRecorder {
     /**
      * Add and memorize a message.
+     *
      * @param message the message to save.
      */
     void addMessage(IMessage message);
 
     /**
      * Get recent messages.
+     *
      * @return an {@link List} containing all recent messages in the time scope.
      */
-    List<IMessage> getMessages();
+    List<Pair<Long, IMessage>> getMessages();
 
     /**
      * Get message TTL.
+     *
      * @return the message TTL milliseconds.
      */
     long getTTL();
 
     /**
      * Set message TTL. (a workaround to implement later initialization)
+     *
      * @param ttl the message TTL milliseconds.
      */
     void setTTL(long ttl);

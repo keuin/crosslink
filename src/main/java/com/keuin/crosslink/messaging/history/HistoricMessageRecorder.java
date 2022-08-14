@@ -1,17 +1,24 @@
 package com.keuin.crosslink.messaging.history;
 
 import com.keuin.crosslink.messaging.message.IMessage;
+import com.keuin.crosslink.util.LoggerNaming;
 import com.keuin.crosslink.util.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class HistoricMessageRecorder implements IHistoricMessageRecorder {
     private long ttlMillis;
     private final LinkedList<Pair<Long, IMessage>> que = new LinkedList<>();
     private final Object lock = new Object();
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(LoggerNaming.name()
+                    .of("history").of("message_recorder").toString());
 
     public HistoricMessageRecorder(long ttlMillis) {
         this.ttlMillis = ttlMillis;
@@ -28,6 +35,7 @@ public class HistoricMessageRecorder implements IHistoricMessageRecorder {
              head = que.peek()
         ) {
             // head has expired, remove it
+            logger.debug("Remove expired history message " + head);
             que.removeFirst();
         }
     }
@@ -41,6 +49,7 @@ public class HistoricMessageRecorder implements IHistoricMessageRecorder {
     @Override
     public void addMessage(IMessage message) {
         Objects.requireNonNull(message);
+        logger.debug("Add message " + message);
         synchronized (lock) {
             que.add(new Pair<>(System.currentTimeMillis(), message));
             clean();
@@ -48,10 +57,12 @@ public class HistoricMessageRecorder implements IHistoricMessageRecorder {
     }
 
     @Override
-    public List<IMessage> getMessages() {
+    public List<Pair<Long, IMessage>> getMessages() {
         synchronized (lock) {
             clean();
-            return que.stream().map(Pair::getV).collect(Collectors.toList());
+            var list = new ArrayList<>(que);
+            logger.debug("History messages: " + list);
+            return list;
         }
     }
 
@@ -62,6 +73,7 @@ public class HistoricMessageRecorder implements IHistoricMessageRecorder {
 
     @Override
     public void setTTL(long ttl) {
+        logger.debug("TTL is set to " + ttl + "ms");
         this.ttlMillis = ttl;
     }
 }

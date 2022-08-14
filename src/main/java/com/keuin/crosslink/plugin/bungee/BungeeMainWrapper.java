@@ -4,7 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.keuin.crosslink.plugin.bungee.module.BungeeAccessorModule;
 import com.keuin.crosslink.plugin.bungee.module.BungeeApiServerModule;
-import com.keuin.crosslink.plugin.bungee.module.BungeeEventBusModule;
+import com.keuin.crosslink.plugin.bungee.module.BungeeEventBusProvider;
 import com.keuin.crosslink.plugin.common.PluginMain;
 import com.keuin.crosslink.plugin.common.ProxyType;
 import com.keuin.crosslink.plugin.common.environ.PluginEnvironment;
@@ -18,19 +18,28 @@ import org.slf4j.LoggerFactory;
 
 public final class BungeeMainWrapper extends Plugin {
 
-    private final Injector injector = Guice.createInjector(
-            new BungeeAccessorModule(this),
-            new BungeeApiServerModule(),
-            new BungeeEventBusModule(),
-            new CommonHistoricMessageRecorderModule(),
-            new CommonIRouterModule(),
-            new CommonPluginEnvironProvider(new PluginEnvironment(
-                    ProxyType.BUNGEECORD,
-                    LoggerFactory.getLogger(LoggerNaming.name().toString()),
-                    getDataFolder().toPath())),
-            new CommonApiServerProvider()
-    );
-    private final PluginMain plugin = injector.getInstance(PluginMain.class);
+    private final BungeeEventBus eventBus;
+
+    private final Injector injector;
+    private final PluginMain plugin;
+
+    public BungeeMainWrapper() {
+        eventBus = new BungeeEventBus(this);
+        getProxy().getPluginManager().registerListener(this, eventBus);
+        injector = Guice.createInjector(
+                new BungeeAccessorModule(this),
+                new BungeeApiServerModule(),
+                new CommonHistoricMessageRecorderModule(),
+                new CommonIRouterModule(),
+                new CommonPluginEnvironProvider(new PluginEnvironment(
+                        ProxyType.BUNGEECORD,
+                        LoggerFactory.getLogger(LoggerNaming.name().toString()),
+                        getDataFolder().toPath())),
+                new BungeeEventBusProvider(eventBus),
+                new CommonApiServerProvider()
+        );
+        plugin = injector.getInstance(PluginMain.class);
+    }
 
     @Override
     public void onLoad() {

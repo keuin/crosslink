@@ -23,7 +23,7 @@ class HistoricMessageRecorderTest {
         Thread.sleep(500);
         var list = recorder.getMessages();
         assertEquals(1, list.size());
-        assertEquals(msg, list.get(0));
+        assertEquals(msg, list.get(0).getV());
         Thread.sleep(510);
         list = recorder.getMessages();
         assertEquals(0, list.size());

@@ -15,19 +15,29 @@ import com.keuin.crosslink.messaging.endpoint.IEndpoint;
 import com.keuin.crosslink.messaging.endpoint.system.ApiEndpoint;
 import com.keuin.crosslink.messaging.history.IHistoricMessageRecorder;
 import com.keuin.crosslink.messaging.router.IRouter;
+import com.keuin.crosslink.messaging.rule.IRule;
+import com.keuin.crosslink.messaging.rule.MessageListeningRule;
 import com.keuin.crosslink.plugin.common.environ.PluginEnvironment;
 import com.keuin.crosslink.plugin.common.event.PlayerConnectEvent;
+import com.keuin.crosslink.util.DateUtil;
 import com.keuin.crosslink.util.LoggerNaming;
 import com.keuin.crosslink.util.StartupMessagePrinter;
 import com.keuin.crosslink.util.version.NewVersionChecker;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.format.TextColor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.TimeZone;
 
 import static com.keuin.crosslink.config.GlobalConfigManager.mapper;
 
@@ -44,8 +54,8 @@ public final class PluginMain {
     public PluginMain(ICoreAccessor coreAccessor,
                       IRouter messageRouter,
                       IApiServer apiServer,
-                      PluginEnvironment pluginEnvironment,
                       IEventBus eventBus,
+                      PluginEnvironment pluginEnvironment,
                       IHistoricMessageRecorder historicMessageRecorder) {
         this.coreAccessor = coreAccessor;
         this.messageRouter = messageRouter;
@@ -68,6 +78,7 @@ public final class PluginMain {
         logger.info("Initializing message routing.");
         // Contains all enabled endpoints, including local and remote ones. Remote endpoints will be added later.
         final var endpoints = new HashSet<IEndpoint>();
+        final var prefixRules = new ArrayList<IRule>();
         try {
             var messaging = GlobalConfigManager.getInstance().messaging();
             var local = Optional.ofNullable(messaging.get("local"))
@@ -79,22 +90,44 @@ public final class PluginMain {
 
             // load local server endpoints
             final var locals = coreAccessor.getServerEndpoints();
-            final var ttlSeconds = Optional.ofNullable(local.get("message_playback_seconds"))
+            final long ttlSeconds = Optional.ofNullable(local.get("message_playback_seconds"))
                     .map(JsonNode::asLong).orElse(-1L);
             if (ttlSeconds > 0) {
                 // enable message replay
-                logger.info("Message replay is enabled. TTL: ");
+                historicMessageRecorder.setTTL(ttlSeconds * 1000);
+                logger.info("Message replay is enabled. TTL: " + ttlSeconds + "s.");
+                var ehLogger = LoggerFactory.getLogger(LoggerNaming.name()
+                        .of("common").of("events").toString());
                 eventBus.registerEventHandler(
-                        (PlayerConnectEvent) (player, uuid) -> historicMessageRecorder.getMessages()
-                                .forEach(msg -> coreAccessor.sendPlayerMessage(uuid, msg.kyoriMessage()))
+                        (PlayerConnectEvent) (player, uuid) -> {
+                            var ms = historicMessageRecorder.getMessages();
+                            ehLogger.info("Player " + player + " (" + uuid + ")" + " connected. " +
+                                    "Sending " + ms.size() + " history message(s).");
+                            ms.stream()
+                                    .map(kv -> Component.join(
+                                            JoinConfiguration.separator(Component.text(" ")),
+                                            Component.text(
+                                                    String.format(
+                                                            "(%s)",
+                                                            DateUtil.getOffsetString(LocalDateTime.ofInstant(
+                                                                    Instant.ofEpochMilli(kv.getK()),
+                                                                    TimeZone.getDefault().toZoneId()))),
+                                                    TextColor.color(0x00AA00)),
+                                            kv.getV().kyoriMessage()))
+                                    .forEach(msg -> coreAccessor.sendPlayerMessage(uuid, msg));
+                        }
                 );
+                // record messages using a prefix rule
+                var rule = new MessageListeningRule();
+                rule.addHandler(historicMessageRecorder::addMessage);
+                prefixRules.add(rule);
             }
             endpoints.addAll(locals);
 
             // load routing table
             try {
                 logger.debug("Loading rule chain.");
-                var rc = new RouterConfigurer(routing);
+                var rc = new RouterConfigurer(routing, prefixRules);
                 rc.configure(messageRouter); // update routing table, clear endpoints
                 logger.debug("Finish configuring message router.");
             } catch (JsonProcessingException | ConfigSyntaxError ex) {

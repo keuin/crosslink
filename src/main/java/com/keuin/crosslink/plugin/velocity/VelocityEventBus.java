@@ -11,7 +11,6 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
-import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 public class VelocityEventBus implements IEventBus {
-    private final Plugin plugin;
+    private final Object plugin;
     private final ProxyServer velocity;
     private final Logger logger = Logger.getLogger(BungeeEventBus.class.getName());
     private final Set<UUID> connectedPlayers = Collections.newSetFromMap(new ConcurrentHashMap<>()); // all players connected to the proxy
@@ -30,7 +29,7 @@ public class VelocityEventBus implements IEventBus {
     private final List<EventHandler> handlers = new ArrayList<>();
 
     @Inject
-    public VelocityEventBus(Plugin plugin, ProxyServer velocity) {
+    public VelocityEventBus(Object plugin, ProxyServer velocity) {
         this.plugin = Objects.requireNonNull(plugin);
         this.velocity = Objects.requireNonNull(velocity);
     }

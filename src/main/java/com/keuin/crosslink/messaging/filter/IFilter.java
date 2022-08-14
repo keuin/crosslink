@@ -12,6 +12,7 @@ import java.util.regex.PatternSyntaxException;
  * Select endpoints.
  */
 public interface IFilter {
+    static final IFilter filterAlwaysTrue = id -> true;
     boolean filter(@NotNull IEndpoint id);
 
     static @NotNull IFilter fromPatternString(@NotNull String pattern) throws ReIdFilter.InvalidPatternStringException {

@@ -32,10 +32,17 @@ public class RouterConfigurer implements IRouterConfigurer {
     private final JsonNode config;
     private static final Logger logger =
             LoggerFactory.getLogger(LoggerNaming.name().of("config").of("router").toString());
+    private final List<IRule> prefixRules = new ArrayList<>();
 
     public RouterConfigurer(@NotNull JsonNode config) {
         Objects.requireNonNull(config);
         this.config = config;
+    }
+
+    public RouterConfigurer(@NotNull JsonNode config, List<IRule> prefixRules) {
+        Objects.requireNonNull(config);
+        this.config = config;
+        this.prefixRules.addAll(prefixRules);
     }
 
     private static class ActionConstructionException extends Exception {
@@ -243,9 +250,9 @@ public class RouterConfigurer implements IRouterConfigurer {
 
     @Override
     public void configure(IRouterConfigurable router) throws JsonProcessingException, ConfigSyntaxError {
+        var rules = new ArrayList<>(prefixRules);
+        rules.addAll(loadRuleChain(router, config));
         router.clearEndpoints();
-        router.updateRuleChain(loadRuleChain(router, config));
+        router.updateRuleChain(rules);
     }
-
-
 }

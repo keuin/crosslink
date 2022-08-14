@@ -3,6 +3,7 @@ package com.keuin.crosslink.plugin.bungee;
 import com.google.inject.Inject;
 import com.keuin.crosslink.plugin.common.IEventBus;
 import com.keuin.crosslink.plugin.common.event.*;
+import com.keuin.crosslink.util.LoggerNaming;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -11,15 +12,17 @@ import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 public class BungeeEventBus implements Listener, IEventBus {
     private final Plugin plugin;
-    private final Logger logger = Logger.getLogger(BungeeEventBus.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(LoggerNaming.name()
+            .of("bungee").of("eventbus").toString());
     private final Set<UUID> connectedPlayers = Collections.newSetFromMap(new ConcurrentHashMap<>()); // all players connected to the proxy
     private final Map<UUID, ServerInfo> joiningServers = new HashMap<>();
     private final Map<UUID, ServerInfo> serverPlayerLastJoined = new HashMap<>(); // the server players last connected to
@@ -29,6 +32,7 @@ public class BungeeEventBus implements Listener, IEventBus {
     @Inject
     public BungeeEventBus(Plugin plugin) {
         this.plugin = Objects.requireNonNull(plugin);
+        logger.debug("Initializing.");
     }
 
     @Override
@@ -39,11 +43,15 @@ public class BungeeEventBus implements Listener, IEventBus {
 
     @net.md_5.bungee.event.EventHandler
     public void onServerDisconnect(ServerDisconnectEvent event) {
+        logger.debug("onServerDisconnect");
         ProxyServer.getInstance().getScheduler().runAsync(plugin, () -> {
+            var player = event.getPlayer().getName();
+            var server = event.getTarget().getName();
+            logger.debug("ServerDisconnectEvent: player: " + player + " server: " + server);
             for (var handler : handlers) {
                 if (handler instanceof PlayerQuitServerEvent) {
                     ((PlayerQuitServerEvent) handler).onPlayerQuitServer(
-                            event.getPlayer().getName(), event.getTarget().getName());
+                            player, server);
                 }
             }
         });
@@ -51,6 +59,7 @@ public class BungeeEventBus implements Listener, IEventBus {
 
     @net.md_5.bungee.event.EventHandler
     public void onPlayerDisconnect(PlayerDisconnectEvent event) {
+        logger.debug("onPlayerDisconnect");
         try {
             var player = event.getPlayer();
             if (player != null) {
@@ -72,12 +81,13 @@ public class BungeeEventBus implements Listener, IEventBus {
                 });
             }
         } catch (Exception e) {
-            logger.warning(String.format("An exception caught while handling player disconnect event: %s.", e));
+            logger.error(String.format("An exception caught while handling player disconnect event: %s.", e));
         }
     }
 
     @net.md_5.bungee.event.EventHandler
     public void onServerConnect(ServerConnectEvent event) {
+        logger.debug("onServerConnect");
         ProxiedPlayer player = event.getPlayer();
         if (player == null)
             return;
@@ -87,7 +97,7 @@ public class BungeeEventBus implements Listener, IEventBus {
 
     @net.md_5.bungee.event.EventHandler
     public void onPlayerJoined(ServerConnectedEvent event) {
-
+        logger.debug("onPlayerJoined");
         // after a player has joined the server
         ProxiedPlayer player = event.getPlayer();
         if (player == null)
@@ -96,7 +106,7 @@ public class BungeeEventBus implements Listener, IEventBus {
         ServerInfo server = joiningServers.get(player.getUniqueId());
 
         if (!joiningServers.containsKey(event.getPlayer().getUniqueId())) {
-            logger.warning(String.format(
+            logger.warn(String.format(
                     "Unexpected player %s. Login broadcast will not be sent.",
                     event.getPlayer().getName()));
             return;
@@ -127,13 +137,16 @@ public class BungeeEventBus implements Listener, IEventBus {
                     }
                 }
             }, 100, TimeUnit.MILLISECONDS);
+        } else {
+            logger.debug("Player " + player.getName() + " is already connected. Skip message replaying.");
         }
     }
 
     public void onPlayerChat(ChatEvent event) {
+        logger.debug("onPlayerChat");
         var conn = event.getSender();
         if (!(conn instanceof ProxiedPlayer)) {
-            logger.severe(String.format("Sender is not a ProxiedPlayer instance: %s", event.getSender().toString()));
+            logger.error(String.format("Sender is not a ProxiedPlayer instance: %s", event.getSender().toString()));
             return;
         }
 
