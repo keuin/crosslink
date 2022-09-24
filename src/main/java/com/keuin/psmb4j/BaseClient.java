@@ -109,6 +109,7 @@ public abstract class BaseClient implements AutoCloseable {
             try {
                 socket.close();
             } catch (IOException ignored) {
+            } finally {
                 socket = null;
             }
         }
